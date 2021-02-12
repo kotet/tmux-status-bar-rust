@@ -100,7 +100,7 @@ impl Block for NetworkBlock {
                         let (txdiff, txprefix) = format_si_prefix(txdiff);
                         let f = format!(
                             "[{}: U{: >4}{}B/s D{: >4}{}B/s]",
-                            &network.name, rxdiff, rxprefix, txdiff, txprefix,
+                            &network.name, txdiff, txprefix, rxdiff, rxprefix,
                         );
                         s = s + &f;
                     }
