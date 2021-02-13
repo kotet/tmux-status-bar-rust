@@ -34,17 +34,17 @@ impl Block for LoadAvgBlock {
         let s = match std::fs::read_to_string(LOADAVG_PATH) {
             Err(e) => {
                 error!("failed to read file {}: {}", LOADAVG_PATH, e);
-                "".to_string()
+                "".to_owned()
             }
             Ok(rawstr) => match rawstr.split(' ').next() {
                 None => {
                     error!("failed to extract loadavg: {}", rawstr);
-                    "".to_string()
+                    "".to_owned()
                 }
                 Some(col) => match col.parse::<f64>() {
                     Err(e) => {
                         error!("failed to parse {}: {}", col, e);
-                        "".to_string()
+                        "".to_owned()
                     }
                     Ok(val) => format!("LA:{:.1}", val),
                 },

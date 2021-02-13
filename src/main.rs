@@ -64,7 +64,6 @@ fn handle_stream(
                 stream.write(&buf[0..nbytes])?;
             }
         }
-        // stream.write(b" ")?;
     }
     stream.flush()?;
     return Ok(());

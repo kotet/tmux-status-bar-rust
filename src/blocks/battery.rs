@@ -1,9 +1,9 @@
 use super::Block;
 use log::info;
-use std::io::Read;
+use std::io::Write;
 use std::time::Duration;
 
-const BUF_LEN: usize = 20;
+const BUF_LEN: usize = 11;
 const BATTERY_CAPACITY_PATH: &str = "/sys/class/power_supply/BAT0/capacity";
 const BATTERY_STATUS_PATH: &str = "/sys/class/power_supply/BAT0/status";
 
@@ -11,7 +11,6 @@ pub struct BatteryBlock {
     last_updated: Duration,
     interval: Duration,
     bytes: [u8; BUF_LEN],
-    len: usize,
 }
 
 impl BatteryBlock {
@@ -20,7 +19,6 @@ impl BatteryBlock {
             last_updated: Duration::new(0, 0),
             interval: interval,
             bytes: [0u8; BUF_LEN],
-            len: 0,
         }
     }
 }
@@ -33,18 +31,23 @@ impl Block for BatteryBlock {
         self.last_updated = unixtime;
 
         let capacity_raw = match std::fs::read_to_string(BATTERY_CAPACITY_PATH) {
-            Err(_) => "err".to_string(),
+            Err(_) => "err".to_owned(),
             Ok(s) => s,
         };
         let status_raw = match std::fs::read_to_string(BATTERY_STATUS_PATH) {
             Err(_) => 'E',
             Ok(s) => s.chars().next().unwrap_or('E'),
         };
-        let s = format!("Bat:{}%({})", capacity_raw.trim(), status_raw);
-        self.len = s.as_bytes().read(&mut self.bytes).unwrap_or(0);
+        write!(
+            &mut self.bytes[..],
+            "Bat:{: >3}%({})",
+            capacity_raw.trim(),
+            status_raw
+        )
+        .expect("failed to write");
         info!("battery updated");
     }
     fn get_bytes(&self) -> &[u8] {
-        &self.bytes[0..self.len]
+        &self.bytes[0..BUF_LEN]
     }
 }

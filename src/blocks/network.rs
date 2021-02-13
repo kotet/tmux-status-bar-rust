@@ -47,7 +47,7 @@ fn get_networks() -> Vec<NetworkEntry> {
                         .unwrap_or(None);
                     if let (Some(rx), Some(tx)) = (rx, tx) {
                         ret.push(NetworkEntry {
-                            name: name.to_string(),
+                            name: name.to_owned(),
                             bytes: NetworkBytes { rx: rx, tx: tx },
                         });
                     }

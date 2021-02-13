@@ -57,7 +57,7 @@ impl Block for MemoryBlock {
             let ratio = (mem_total - mem_avail) * 100 / mem_total;
             format!("Mem:{}%", ratio)
         } else {
-            "".to_string()
+            "".to_owned()
         };
         self.len = s.as_bytes().read(&mut self.bytes).unwrap_or(0);
         info!("memory updated");

@@ -57,7 +57,7 @@ impl Block for SwapBlock {
             let ratio = (swap_total - swap_free) * 100 / swap_total;
             format!("Swp:{}%", ratio)
         } else {
-            "".to_string()
+            "".to_owned()
         };
         self.len = s.as_bytes().read(&mut self.bytes).unwrap_or(0);
         info!("swap updated");
